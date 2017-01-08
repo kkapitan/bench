@@ -84,10 +84,18 @@ class TkPlotCanvas(Tkinter.Frame):
     f.clf()
 
     a = f.add_subplot(111)
-    t = range(0, len(yvals), 1)
-    s = yvals
 
-    a.plot(t, s)
+    t = range(0, len(yvals), 1)
+    s = map(lambda x: float(x), yvals)
+
+    width = 0.35
+
+    rects = a.bar(t, s, width)
+
+    a.set_ylabel('Times')
+    a.set_title('Bench results')
+    a.set_xticks(map(lambda x: x + width,t))
+    a.set_xticklabels(xvals)
 
     self.canvas.show()
 
@@ -149,4 +157,8 @@ def is_exe(fpath):
 if __name__=='__main__':
   root = Tkinter.Tk()
   MainView(root).place()
+  root.title("Bench by Krzysztof Kapitan & Jan Badura")
+  root.resizable(0, 0)
+  root.geometry("500x800")
+
   root.mainloop()
