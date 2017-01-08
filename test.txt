@@ -5,6 +5,7 @@ BarPlotter.pyc
 BenchCommandBuilder.py
 BenchCommandBuilder.pyc
 CSVReader.py
+CSVReader.pyc
 DirectoryPickerView.py
 DirectoryPickerView.pyc
 FilePickerView.py
@@ -25,6 +26,7 @@ BarPlotter.pyc
 BenchCommandBuilder.py
 BenchCommandBuilder.pyc
 CSVReader.py
+CSVReader.pyc
 DirectoryPickerView.py
 DirectoryPickerView.pyc
 FilePickerView.py
@@ -45,6 +47,7 @@ BarPlotter.pyc
 BenchCommandBuilder.py
 BenchCommandBuilder.pyc
 CSVReader.py
+CSVReader.pyc
 DirectoryPickerView.py
 DirectoryPickerView.pyc
 FilePickerView.py

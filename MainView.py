@@ -1,11 +1,12 @@
 import subprocess32
-import csv
+
 
 from ArgumentsView import *
 from DirectoryPickerView import *
 from PlotView import *
 from FilePickerView import *
 from BenchCommandBuilder import *
+from CSVReader import *
 
 class MainView(Tkinter.Frame):
   def __init__(self, root):
@@ -45,17 +46,7 @@ class MainView(Tkinter.Frame):
     args = self.argumentsView.arguments.get()
     cmd = self.executablePicker.fileName.get()
 
-
     subprocess32.call(BenchCommandBuilder().buildCommand(inDir, outDir, cmd, args))
 
-    csvfile = open('res.csv', 'rb')
-    reader = csv.reader(csvfile, delimiter=';', quotechar='|')
-
-    testNames = []
-    testTimes = []
-    for row in reader:
-      testNames.append(row[0])
-      testTimes.append(row[1])
-    csvfile.close()
-
-    self.plotCanvas.plot(testNames, testTimes)
+    array = CSVReader().read("res.csv")
+    self.plotCanvas.plot(array[0], array[1])
