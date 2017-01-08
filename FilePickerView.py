@@ -23,5 +23,5 @@ class FilePickerView(Tkinter.Frame):
     Tkinter.Button(self, text=text, command=command).pack(**button_opt)
 
   def askFilename(self):
-    options = {'filetypes' : [('all files', '.*'), ('text files', '.txt')], 'initialdir' : '~', 'parent': self, 'title' : 'This is a title'}
+    options = { 'initialdir' : '~', 'parent': self, 'title' : 'This is a title'}
     self.fileName.set(tkFileDialog.askopenfilename(**options))

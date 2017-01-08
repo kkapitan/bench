@@ -16,6 +16,7 @@ PlotView.py
 PlotView.pyc
 bench-gui.py
 bench.py
+output
 res.csv
 test
 test.txt
@@ -37,6 +38,7 @@ PlotView.py
 PlotView.pyc
 bench-gui.py
 bench.py
+output
 res.csv
 test
 test.txt
@@ -58,6 +60,7 @@ PlotView.py
 PlotView.pyc
 bench-gui.py
 bench.py
+output
 res.csv
 test
 test.txt
