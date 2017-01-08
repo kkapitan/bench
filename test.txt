@@ -2,6 +2,9 @@ ArgumentsView.py
 ArgumentsView.pyc
 BarPlotter.py
 BarPlotter.pyc
+BenchCommandBuilder.py
+BenchCommandBuilder.pyc
+CSVReader.py
 DirectoryPickerView.py
 DirectoryPickerView.pyc
 FilePickerView.py
@@ -19,6 +22,9 @@ ArgumentsView.py
 ArgumentsView.pyc
 BarPlotter.py
 BarPlotter.pyc
+BenchCommandBuilder.py
+BenchCommandBuilder.pyc
+CSVReader.py
 DirectoryPickerView.py
 DirectoryPickerView.pyc
 FilePickerView.py
@@ -36,6 +42,9 @@ ArgumentsView.py
 ArgumentsView.pyc
 BarPlotter.py
 BarPlotter.pyc
+BenchCommandBuilder.py
+BenchCommandBuilder.pyc
+CSVReader.py
 DirectoryPickerView.py
 DirectoryPickerView.pyc
 FilePickerView.py

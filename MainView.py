@@ -5,6 +5,7 @@ from ArgumentsView import *
 from DirectoryPickerView import *
 from PlotView import *
 from FilePickerView import *
+from BenchCommandBuilder import *
 
 class MainView(Tkinter.Frame):
   def __init__(self, root):
@@ -44,23 +45,11 @@ class MainView(Tkinter.Frame):
     args = self.argumentsView.arguments.get()
     cmd = self.executablePicker.fileName.get()
 
-    pythonPath = "/usr/bin/python"
-    benchPath = "./"
-    benchCommand = 'bench.py --save res.csv --cases ' + inDir
-    if outDir != None and len(outDir) > 0:
-      benchCommand = benchCommand + ' --output ' + outDir
-    benchCommand = benchCommand + ' ' + cmd
-    if args != None and len(args) > 0:
-      benchCommand = benchCommand + ' ' + args
 
-    benchCommandArray = (pythonPath + ' ' + benchPath + benchCommand).split(" ")
-
-    subprocess32.call(benchCommandArray)
+    subprocess32.call(BenchCommandBuilder().buildCommand(inDir, outDir, cmd, args))
 
     csvfile = open('res.csv', 'rb')
     reader = csv.reader(csvfile, delimiter=';', quotechar='|')
-
-    print benchCommandArray
 
     testNames = []
     testTimes = []
