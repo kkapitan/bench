@@ -10,30 +10,32 @@ class MainView(Tkinter.Frame):
   def __init__(self, root):
     Tkinter.Frame.__init__(self, root)
 
+    entry_opt = {'fill': Tkconstants.BOTH, 'padx': 5, 'pady': 5}
+
     self.executablePicker = FilePickerView(root, "Choose executable")
-    self.executablePicker.pack()
+    self.executablePicker.pack(**entry_opt)
 
     self.inputPicker = DirectoryPickerView(root, "Choose input directory", False)
-    self.inputPicker.pack()
+    self.inputPicker.pack(**entry_opt)
 
     self.argumentsView = ArgumentsView(root)
-    self.argumentsView.pack()
+    self.argumentsView.pack(**entry_opt)
 
     self.outputPicker = DirectoryPickerView(root, "Choose output directory")
-    self.outputPicker.pack()
+    self.outputPicker.pack(**entry_opt)
 
     self.executablePicker.fileName.set("ls")
     self.inputPicker.directory.set("/Users/kkapitan/bench/test")
 
-    self.setupButton()
+    self.setupButton(root)
 
     self.plotCanvas = PlotView(root)
-    self.plotCanvas.place()
+    self.plotCanvas.pack(**entry_opt)
 
 
-  def setupButton(self):
+  def setupButton(self, root):
     button_opt = {'fill': Tkconstants.BOTH, 'padx': 5, 'pady': 5}
-    Tkinter.Button(self, text="Bench it!", command=self.main_action).pack(**button_opt)
+    Tkinter.Button(root, text="Bench it!", command=self.main_action).pack(**button_opt)
 
   def main_action(self):
 

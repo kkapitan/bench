@@ -40,6 +40,6 @@ class DirectoryPickerView(Tkinter.Frame):
     return button
 
   def askDirectory(self):
-    options = {'initialdir': '~', 'mustexist': False,'parent':self.root,'title':'This is a title'}
+    options = {'initialdir': '~', 'mustexist': False,'parent':self,'title':'This is a title'}
 
     self.directory.set(tkFileDialog.askdirectory(**options))
