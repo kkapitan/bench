@@ -8,20 +8,16 @@ class FilePickerView(Tkinter.Frame):
     self.fileName = StringVar(0)
 
     self.setupEntry()
-    self.setupButton(name, self.askFilename)
 
   def setupEntry(self):
-    entry_opt = {'fill': Tkconstants.BOTH, 'padx': 5, 'pady': 5}
+      entry_opt = {'fill': Tkconstants.BOTH, 'padx': 5, 'pady': 5}
 
-    entry = Entry(self, textvariable=self.fileName)
-    entry.pack(**entry_opt)
-    entry.configure(state="disabled")
+      entry = Entry(self, textvariable=self.fileName, state="readonly")
+      entry.pack(**entry_opt)
+      entry.bind('<Button-1>', self.askFilename)
 
-  def setupButton(self, text, command):
-    button_opt = {'fill': Tkconstants.BOTH, 'padx': 5, 'pady': 5}
+      return entry
 
-    Tkinter.Button(self, text=text, command=command).pack(**button_opt)
-
-  def askFilename(self):
+  def askFilename(self, event):
     options = { 'initialdir' : '~', 'parent': self, 'title' : 'This is a title'}
     self.fileName.set(tkFileDialog.askopenfilename(**options))

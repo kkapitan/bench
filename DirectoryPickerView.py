@@ -7,12 +7,11 @@ class DirectoryPickerView(Tkinter.Frame):
     Tkinter.Frame.__init__(self, root)
     self.directory = StringVar(None)
 
-    self.setupEntry()
-    button = self.setupButton(name, self.askDirectory)
+    entry = self.setupEntry()
 
     if show_checkbox:
       self.checkState = IntVar(None)
-      self.setupCheckbox(self.checkState, button)
+      self.setupCheckbox(self.checkState, entry)
 
   def setupCheckbox(self, stateVar, widget):
     def cb():
@@ -28,18 +27,13 @@ class DirectoryPickerView(Tkinter.Frame):
   def setupEntry(self):
     entry_opt = {'fill': Tkconstants.BOTH, 'padx': 5, 'pady': 5}
 
-    entry = Entry(self, textvariable=self.directory)
+    entry = Entry(self, textvariable=self.directory, state="readonly")
     entry.pack(**entry_opt)
-    entry.configure(state="disabled")
+    entry.bind('<Button-1>', self.askDirectory)
 
-  def setupButton(self, text, command):
-    button_opt = {'fill': Tkconstants.BOTH, 'padx': 5, 'pady': 5}
+    return entry
 
-    button = Tkinter.Button(self, text=text, command=command)
-    button.pack(**button_opt)
-    return button
-
-  def askDirectory(self):
+  def askDirectory(self, event):
     options = {'initialdir': '~', 'mustexist': False,'parent':self,'title':'This is a title'}
 
     self.directory.set(tkFileDialog.askdirectory(**options))
