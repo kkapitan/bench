@@ -24,7 +24,9 @@ class DirectoryPickerView(Tkinter.Frame):
   def setupEntry(self):
     entry_opt = {'fill': Tkconstants.BOTH, 'padx': 5, 'pady': 5}
 
-    Entry(root, textvariable=self.directory).pack(**entry_opt)
+    entry = Entry(root, textvariable=self.directory)
+    entry.pack(**entry_opt)
+    entry.configure(state="disabled")
 
   def setupButton(self, text, command):
     button_opt = {'fill': Tkconstants.BOTH, 'padx': 5, 'pady': 5}
@@ -48,7 +50,9 @@ class FilePickerView(Tkinter.Frame):
   def setupEntry(self):
     entry_opt = {'fill': Tkconstants.BOTH, 'padx': 5, 'pady': 5}
 
-    Entry(root, textvariable=self.fileName).pack(**entry_opt)
+    entry = Entry(root, textvariable=self.fileName)
+    entry.pack(**entry_opt)
+    entry.configure(state="disabled")
 
   def setupButton(self, text, command):
     button_opt = {'fill': Tkconstants.BOTH, 'padx': 5, 'pady': 5}
@@ -90,8 +94,7 @@ class TkPlotCanvas(Tkinter.Frame):
 
     width = 0.35
 
-    rects = a.bar(t, s, width)
-
+    a.bar(t, s, width)
     a.set_ylabel('Times')
     a.set_title('Bench results')
     a.set_xticks(map(lambda x: x + width,t))
