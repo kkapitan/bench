@@ -1,5 +1,7 @@
 ArgumentsView.py
 ArgumentsView.pyc
+BarPlotter.py
+BarPlotter.pyc
 DirectoryPickerView.py
 DirectoryPickerView.pyc
 FilePickerView.py
@@ -15,6 +17,8 @@ test
 test.txt
 ArgumentsView.py
 ArgumentsView.pyc
+BarPlotter.py
+BarPlotter.pyc
 DirectoryPickerView.py
 DirectoryPickerView.pyc
 FilePickerView.py
@@ -30,6 +34,8 @@ test
 test.txt
 ArgumentsView.py
 ArgumentsView.pyc
+BarPlotter.py
+BarPlotter.pyc
 DirectoryPickerView.py
 DirectoryPickerView.pyc
 FilePickerView.py
