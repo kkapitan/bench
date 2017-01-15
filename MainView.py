@@ -1,5 +1,6 @@
 import subprocess32
 
+from Runner import *
 import Tkinter, Tkconstants, tkFileDialog
 from Tkinter import *
 
@@ -42,7 +43,7 @@ class BinaryInputView(Tkinter.Frame):
 
     def askFilename(self, var):
         def callback(event):
-            options = {'initialdir': '~', 'parent': self, 'title': 'This is a title'}
+            options = {'initialdir': '~/testForBench/', 'parent': self, 'title': 'This is a title'}
             var.set(tkFileDialog.askopenfilename(**options))
 
         return callback
@@ -108,7 +109,7 @@ class GridView(Tkinter.Frame):
 
     def askFilename(self, var):
         def callback(event):
-            options = { 'initialdir' : '~', 'parent': self, 'title' : 'This is a title'}
+            options = { 'initialdir' : '~/testForBench/', 'parent': self, 'title' : 'This is a title'}
             var.set(tkFileDialog.askopenfilename(**options))
         return callback
 
@@ -119,7 +120,7 @@ class MainView(Tkinter.Frame):
         self.fileInputView = fi = BinaryInputView(self)
         fi.pack()
 
-        self.gridView = gv = GridView(self, 10)
+        self.gridView = gv = GridView(self, 2)
         gv.pack()
 
         self.plotView = pv = PlotView(self)
@@ -129,12 +130,15 @@ class MainView(Tkinter.Frame):
         button.pack()
 
     def main_action(self):
-        print(self.prepare_input())
+        params = self.prepare_input()
 
         #subprocess32.call(BenchCommandBuilder().buildCommand(inDir, outDir, cmd, args))
+        #array = CSVReader().read("res.csv")
 
-        array = CSVReader().read("res.csv")
-        self.plotView.plot(array[0], array[1])
+        res = runTests(params)
+        resT = zip(*res)
+        print resT
+        self.plotView.plot(resT[-1], resT[0], resT[3])
 
     def prepare_input(self):
 

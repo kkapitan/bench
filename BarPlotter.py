@@ -1,9 +1,11 @@
 import matplotlib
+import numpy as np
 matplotlib.use('TkAgg')
 
 class BarPlotter():
-  def __init__(self, vals, labels):
-      self.vals = vals
+  def __init__(self, times, mems, labels):
+      self.times = times
+      self.mems = mems
       self.labels = labels
 
   def plot(self, figure, clear=True):
@@ -12,12 +14,14 @@ class BarPlotter():
 
     a = figure.add_subplot(111)
 
-    t = range(0, len(self.vals), 1)
-    s = map(lambda x: float(x), self.vals)
+    t = np.arange(len(self.times))
+    s = map(lambda x: float(x), self.times)
+    m = map(lambda x: float(x), self.mems)
 
     width = 0.35
 
     a.bar(t, s, width)
+    a.bar(t+width, m, width, color='r')
     a.set_ylabel('Times')
     a.set_title('Bench results')
     a.set_xticks(map(lambda x: x + width, t))
