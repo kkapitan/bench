@@ -21,7 +21,9 @@ class BarPlotter():
     width = 0.35
 
     a.bar(t, s, width)
-    a.bar(t+width, m, width, color='r')
+    a2 = a.twinx()
+    a2.bar(t+width, m, width, color='r')
+    a2.set_ylabel('Memory')
     a.set_ylabel('Times')
     a.set_title('Bench results')
     a.set_xticks(map(lambda x: x + width, t))

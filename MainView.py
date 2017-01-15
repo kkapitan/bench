@@ -120,7 +120,7 @@ class MainView(Tkinter.Frame):
         self.fileInputView = fi = BinaryInputView(self)
         fi.pack()
 
-        self.gridView = gv = GridView(self, 2)
+        self.gridView = gv = GridView(self, 5)
         gv.pack()
 
         self.plotView = pv = PlotView(self)
