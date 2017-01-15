@@ -138,8 +138,8 @@ class MainView(Tkinter.Frame):
         res = runTests(params)
         resT = zip(*res)
         print resT
-        self.plotView.plot(resT[6], resT[1], resT[3], resT[7], resT[9])
-        self.prepare_output(resT[4])
+        #self.plotView.plot(resT[6], resT[1], resT[3], resT[7], resT[9])
+        self.prepare_output(resT)
 
     def prepare_input(self):
 
@@ -153,8 +153,8 @@ class MainView(Tkinter.Frame):
         return result
 
     def prepare_output(self, result):
-        self.plotView.plot(result[-1], result[0], result[3])
-        self.output_statuses(["OK", "ERROR"])
+        self.plotView.plot(result[6], result[1], result[3], result[7], result[9])
+        self.output_statuses(result[4])
 
     def output_statuses(self, statuses):
         for index, status in enumerate(statuses):
