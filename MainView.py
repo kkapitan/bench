@@ -76,11 +76,11 @@ class GridView(Tkinter.Frame):
 
     def addRow(self, row):
 
-        runsVar, runsEntry = self.argumentsEntry("10", 5)
+        runsVar, runsEntry = self.argumentsEntry("1", 5)
         argVar, argEntry = self.argumentsEntry()
         inVar, inEntry = self.setupFileEntry()
         outVar, outEntry = self.setupFileEntry()
-        timeLimitVar, timeLimitEntry = self.argumentsEntry("5", 5)
+        timeLimitVar, timeLimitEntry = self.argumentsEntry("1", 5)
         memLimitVar, memLimitEntry = self.argumentsEntry("1000000", 10)
 
         entries = [runsEntry, argEntry, inEntry, outEntry, timeLimitEntry, memLimitEntry]
@@ -132,13 +132,10 @@ class MainView(Tkinter.Frame):
     def main_action(self):
         params = self.prepare_input()
 
-        #subprocess32.call(BenchCommandBuilder().buildCommand(inDir, outDir, cmd, args))
-        #array = CSVReader().read("res.csv")
-
         res = runTests(params)
         resT = zip(*res)
         print resT
-        self.plotView.plot(resT[-1], resT[0], resT[3])
+        self.plotView.plot(resT[6], resT[1], resT[3], resT[7], resT[9])
 
     def prepare_input(self):
 

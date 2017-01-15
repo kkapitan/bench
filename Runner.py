@@ -2,11 +2,34 @@ import subprocess32
 import numpy as np
 
 def prepParams(bin, perf, test):
-    if perf == 0:
-        return ["scripts/runTest", "run", "-bf", bin, "-pa", test[1], "-in", test[2], "-ou", test[3], "-t", test[4], "-m", test[5]]
-    else:
-        return ["scripts/runTest", "run", "-bf", bin, "-p", "aaa", "-pa", test[1], "-in", test[2], "-ou", test[3], "-t", test[4], "-m", test[5]]
+    command = []
+    command += ["scripts/runTest"]
+    command += ["run"]
+    command += ["-bf"]
+    command += [bin]
+    if perf == "1":
+        command += ["-p"]
+        command += ["true"]
+    if test[1] != "":
+        command += ["-pa"]
+        command += [test[1]]
+    if test[1] == "":
+        command += ["-pa"]
+        command += ["null"]
+    if test[2] != "":
+        command += ["-in"]
+        command += [test[2]]
+    if test[3] != "":
+        command += ["-ou"]
+        command += [test[3]]
+    if test[4] != "":
+        command += ["-t"]
+        command += [test[4]]
+    if test[5] != "":
+        command += ["-m"]
+        command += [test[5]]
 
+    return command
 
 def runTests(tests):
     res = []
@@ -31,8 +54,11 @@ def runTests(tests):
 
         clkTicksAvg = np.average(np.array(clkTick).astype(np.float))
         perfsAvg = np.average(np.array(perfs).astype(np.float))
+        perfstdDev = np.std(np.array(perfs).astype(np.float))
         timesAvg = np.average(np.array(times).astype(np.float))
+        timesStdDev = np.std(np.array(times).astype(np.float))
         memsAvg = np.average(np.array(mems).astype(np.float))
+        memStdDev = np.std(np.array(mems).astype(np.float))
         if "ERROR" in diffs:
             diffsRes = "ERROR"
         else :
@@ -43,8 +69,10 @@ def runTests(tests):
             if i != 0 and i != "0":
                 exsRes = i
                 break
-
-        res += [[clkTicksAvg, perfsAvg, timesAvg, memsAvg, diffsRes, exsRes, test[3].split("/")[-1] ]]
+        name = test[3].split("/")[-1]
+        if name == "":
+            name = "case"
+        res += [[clkTicksAvg, perfsAvg, timesAvg, memsAvg, diffsRes, exsRes, name, perfstdDev, timesStdDev, memStdDev ]]
 
     return res
 
