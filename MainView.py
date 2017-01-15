@@ -68,8 +68,9 @@ class GridView(Tkinter.Frame):
         outLabel = Label(self, text="Output file (optional)")
         timeLimitLabel = Label(self, text="Timeout (s)")
         memLimitLabel = Label(self, text="Memory limit (kB)")
+        statusLabel = Label(self, text="Status")
 
-        entries = [runsLabel, argLabel, inLabel, outLabel, timeLimitLabel, memLimitLabel]
+        entries = [runsLabel, argLabel, inLabel, outLabel, timeLimitLabel, memLimitLabel, statusLabel]
 
         for column, entry in enumerate(entries):
             entry.grid(row=0, column=column)
@@ -82,21 +83,23 @@ class GridView(Tkinter.Frame):
         outVar, outEntry = self.setupFileEntry()
         timeLimitVar, timeLimitEntry = self.argumentsEntry("1", 5)
         memLimitVar, memLimitEntry = self.argumentsEntry("1000000", 10)
+        statusVar, statusEntry = self.argumentsEntry("Not Run", 10, True)
 
-        entries = [runsEntry, argEntry, inEntry, outEntry, timeLimitEntry, memLimitEntry]
+        entries = [runsEntry, argEntry, inEntry, outEntry, timeLimitEntry, memLimitEntry, statusEntry]
 
         for column, entry in enumerate(entries):
             entry.grid(row=row, column=column)
 
-        vars = {"runs": runsVar, "args": argVar, "in": inVar, "out": outVar, "timelimit": timeLimitVar, "memlimit": memLimitVar}
+        vars = {"runs": runsVar, "args": argVar, "in": inVar, "out": outVar, "timelimit": timeLimitVar, "memlimit": memLimitVar, "status": statusVar}
         self.userInputVars.append(vars)
 
 
-    def argumentsEntry(self, initial="", width=None):
+    def argumentsEntry(self, initial="", width=None, readonly=False):
         var = StringVar()
         var.set(initial)
 
         entry = Entry(self, textvariable=var)
+        if readonly: entry.config(state="readonly")
         if width != None: entry.config(width=width)
         return var, entry
 
@@ -136,6 +139,7 @@ class MainView(Tkinter.Frame):
         resT = zip(*res)
         print resT
         self.plotView.plot(resT[6], resT[1], resT[3], resT[7], resT[9])
+        self.prepare_output(resT[4])
 
     def prepare_input(self):
 
@@ -147,6 +151,14 @@ class MainView(Tkinter.Frame):
             result.append(resultEntry)
 
         return result
+
+    def prepare_output(self, result):
+        self.plotView.plot(result[-1], result[0], result[3])
+        self.output_statuses(["OK", "ERROR"])
+
+    def output_statuses(self, statuses):
+        for index, status in enumerate(statuses):
+            self.gridView.userInputVars[index]["status"].set(status)
 
     def setupButton(self, text, command):
         button_opt = {'fill': Tkconstants.BOTH, 'padx': 5, 'pady': 5}
