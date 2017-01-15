@@ -32,3 +32,5 @@ class BarPlotter():
     a.set_xticks(map(lambda x: x + width, t))
     a.set_xticklabels(self.labels)
     a2.set_xticklabels(self.labels)
+    a.set_ylim(bottom=0)
+    a2.set_ylim(bottom=0)
