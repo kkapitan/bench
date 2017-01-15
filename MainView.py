@@ -43,7 +43,7 @@ class BinaryInputView(Tkinter.Frame):
 
     def askFilename(self, var):
         def callback(event):
-            options = {'initialdir': '~/testForBench/', 'parent': self, 'title': 'This is a title'}
+            options = {'initialdir': '~', 'parent': self, 'title': 'This is a title'}
             var.set(tkFileDialog.askopenfilename(**options))
 
         return callback
@@ -109,7 +109,7 @@ class GridView(Tkinter.Frame):
 
     def askFilename(self, var):
         def callback(event):
-            options = { 'initialdir' : '~/testForBench/', 'parent': self, 'title' : 'This is a title'}
+            options = { 'initialdir' : '~', 'parent': self, 'title' : 'This is a title'}
             var.set(tkFileDialog.askopenfilename(**options))
         return callback
 
