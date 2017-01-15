@@ -70,9 +70,22 @@ def runTests(tests):
                 exsRes = i
                 break
         name = test[3].split("/")[-1]
+
+        if exsRes != 0:
+            if exsRes == 124 or exsRes == "124":
+                status = "TLE"
+            elif exsRes == 123 or exsRes == "123":
+                status = "MLE"
+            else:
+                status = "RTE(" + str(exsRes) + ")"
+        elif diffsRes == "ERROR":
+            status = "WO"
+        else:
+            status = "OK"
+
         if name == "":
             name = "case"
-        res += [[clkTicksAvg, perfsAvg, timesAvg, memsAvg, diffsRes, exsRes, name, perfstdDev, timesStdDev, memStdDev ]]
+        res += [[clkTicksAvg, perfsAvg, timesAvg, memsAvg, diffsRes, exsRes, name, perfstdDev, timesStdDev, memStdDev, status ]]
 
     return res
 
