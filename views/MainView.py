@@ -27,8 +27,9 @@ class MainView(Tkinter.Frame):
         params = self.prepare_input()
 
         res = runTests(params)
+        #res = self.mock_data(5)
         resT = zip(*res)
-        print resT
+
         self.prepare_output(resT)
 
     def prepare_input(self):
@@ -50,3 +51,9 @@ class MainView(Tkinter.Frame):
     def output_statuses(self, statuses):
         for index, status in enumerate(statuses):
             self.gridView.userInputVars[index]["status"].set(status)
+
+    # Data only for mocking
+    def mock_data(self, number_of_entries):
+        def mock_entry(x):
+            return [0.0, x * 5.0, 0.0, x * 256.0, 'OK', '127', 'case ' + str(x), 10.0, 0.0, 5.0,'OK']
+        return map(mock_entry, range(1, number_of_entries + 1))

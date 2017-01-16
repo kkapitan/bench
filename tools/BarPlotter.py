@@ -21,14 +21,28 @@ class BarPlotter():
     ms = map(lambda x: float(x), self.memsStd)
     width = 0.35
 
-    a.bar(t, s, width, color='y', yerr=ts)
+    rects1 = a.bar(t, s, width, color='y', yerr=ts)
     a2 = a.twinx()
-    a2.bar(t+width, m, width, color='r', yerr=ms)
+    rects2 = a2.bar(t+width, m, width, color='r', yerr=ms)
+
     a2.set_ylabel('Memory')
     a.set_ylabel('Times')
+
     a.set_title('Bench results')
     a.set_xticks(map(lambda x: x + width, t))
+
     a.set_xticklabels(self.labels)
     a2.set_xticklabels(self.labels)
+
     a.set_ylim(bottom=0)
     a2.set_ylim(bottom=0)
+
+    def autolabel(rects, ax):
+        for rect in rects:
+            height = rect.get_height()
+            ax.text(rect.get_x() + rect.get_width() / 2., 1.05 * height,
+                    '%d' % int(height),
+                    ha='center', va='bottom')
+
+    autolabel(rects1, a)
+    autolabel(rects2, a2)
