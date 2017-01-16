@@ -1,6 +1,7 @@
-from EntryFactory import  *
-from LabelFactory import *
-from ButtonFactory import *
+from factories.EntryFactory import  *
+from factories.LabelFactory import *
+from factories.ButtonFactory import *
+
 
 class GridView(Tkinter.Frame):
     def __init__(self, root, maxRows):

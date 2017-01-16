@@ -1,10 +1,14 @@
-import Tkinter, Tkconstants
-from BarPlotter import BarPlotter
+import Tkconstants
+import Tkinter
 
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
+import matplotlib
+matplotlib.use('TkAgg')
+
 from matplotlib.backend_bases import key_press_handler
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
 from matplotlib.figure import Figure
 
+from tools.BarPlotter import BarPlotter
 
 class PlotView(Tkinter.Frame):
   def __init__(self, root):

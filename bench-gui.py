@@ -1,4 +1,4 @@
-from MainView import *
+from views.MainView import *
 
 if __name__=='__main__':
   root = Tkinter.Tk()

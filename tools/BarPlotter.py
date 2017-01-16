@@ -1,6 +1,4 @@
-import matplotlib
 import numpy as np
-matplotlib.use('TkAgg')
 
 class BarPlotter():
   def __init__(self, times, mems, labels, timesStd, memsStd):

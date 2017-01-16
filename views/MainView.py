@@ -1,9 +1,11 @@
-from Runner import *
-
-from PlotView import *
-from GridView import *
-from ButtonFactory import *
 from ExecutableInputView import *
+from GridView import *
+from PlotView import *
+
+from factories.ButtonFactory import *
+
+from tools.Runner import *
+
 
 class MainView(Tkinter.Frame):
     def __init__(self, root):

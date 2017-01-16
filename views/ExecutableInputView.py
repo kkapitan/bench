@@ -1,7 +1,7 @@
 import Tkinter
 
-from EntryFactory import *
-from LabelFactory import *
+from factories.EntryFactory import *
+from factories.LabelFactory import *
 
 class ExecutableInputView(Tkinter.Frame):
     def __init__(self, root):
