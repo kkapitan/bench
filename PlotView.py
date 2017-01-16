@@ -5,6 +5,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolb
 from matplotlib.backend_bases import key_press_handler
 from matplotlib.figure import Figure
 
+
 class PlotView(Tkinter.Frame):
   def __init__(self, root):
     Tkinter.Frame.__init__(self, root)
@@ -20,7 +21,6 @@ class PlotView(Tkinter.Frame):
     canvas._tkcanvas.pack(side=Tkconstants.TOP, fill=Tkconstants.BOTH, expand=1)
 
     def on_key_event(event):
-      print('you pressed %s' % event.key)
       key_press_handler(event, canvas, toolbar)
 
     canvas.mpl_connect('key_press_event', on_key_event)
