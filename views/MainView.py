@@ -38,7 +38,8 @@ class MainView(Tkinter.Frame):
 
         for inputDictionary in self.gridView.userInputVars:
             resultEntry = map(lambda x: inputDictionary[x].get(), ["runs", "args", "in", "out", "timelimit", "memlimit"])
-            result.append(resultEntry)
+            if resultEntry[2] != '':
+                result.append(resultEntry)
 
         return result
 
