@@ -25,8 +25,8 @@ class BarPlotter():
     a2 = a.twinx()
     rects2 = a2.bar(t+width, m, width, color='r', yerr=ms)
 
-    a2.set_ylabel('Memory')
-    a.set_ylabel('Times')
+    a2.set_ylabel('Memory[kB]')
+    a.set_ylabel('Times[s]')
 
     a.set_title('Bench results')
     a.set_xticks(map(lambda x: x + width, t))
@@ -41,7 +41,7 @@ class BarPlotter():
         for rect in rects:
             height = rect.get_height()
             ax.text(rect.get_x() + rect.get_width() / 2., 1.05 * height,
-                    '%d' % int(height),
+                    '%.2f' % float(height),
                     ha='center', va='bottom')
 
     autolabel(rects1, a)

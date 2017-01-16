@@ -26,6 +26,7 @@ class MainView(Tkinter.Frame):
     def main_action(self):
         params = self.prepare_input()
 
+        print params
         res = runTests(params)
         #res = self.mock_data(5)
         resT = zip(*res)
@@ -35,7 +36,7 @@ class MainView(Tkinter.Frame):
     def prepare_input(self):
 
         file = self.fileInputView.fileVar.get()
-        result = [file, '1']
+        result = [file, '0']
 
         for inputDictionary in self.gridView.userInputVars:
             resultEntry = map(lambda x: inputDictionary[x].get(), ["runs", "args", "in", "out", "timelimit", "memlimit"])
@@ -45,7 +46,8 @@ class MainView(Tkinter.Frame):
         return result
 
     def prepare_output(self, result):
-        self.plotView.plot(result[6], result[1], result[3], result[7], result[9])
+        print result
+        self.plotView.plot(result[6], result[2], result[3], result[8], result[9])
         self.output_statuses(result[-1])
 
     def output_statuses(self, statuses):
