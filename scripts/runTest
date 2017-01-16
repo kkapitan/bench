@@ -1,0 +1,134 @@
+#!/bin/bash
+
+COMMAND=$1 && shift
+while [[ $# -gt 0 ]] ; do
+	case $1 in
+		-bf|binaryfile) 	BINARYFILE=$2 && shift ;;
+		-in|input)			INPUT=$2 && shift ;;
+		-ou|output)         OUTPUT=$2 && shift ;;
+		-m|memout)			MEMOUT=$2 && shift ;;
+		-t|timeout)			TIMEOUT=$2 && shift ;;
+		-p|perf)            PERF=$2 && shift ;;
+		-pa|params)         PARAMS=$2 && shift ;;
+		*) ;;
+	esac
+	shift
+done
+
+# Requires $1 - pid, path, timeout, memout
+monitor(){
+	pid="${1}"
+	if [ "${pid}" = "" ] ; then
+		exit 2
+	fi
+
+	ticks=`perl -e 'use POSIX;print POSIX::sysconf(&POSIX::_SC_CLK_TCK)'`
+
+	while  cat /proc/${pid}/status 2>/dev/null | grep "VmPeak:" >> tmp/mem.log ; do
+		mem=`cat tmp/mem.log | tail -n 1 | sed 's/VmPeak:\s*\([0-9]*\)\s*kB/\1/' | tr -d '\n'`
+		if [ "${mem}" != "" ] && [ "${MEMOUT}" != "" ] && [ ${mem} -gt ${MEMOUT} ] ; then
+			kill -s 9 ${pid}
+			exit 123
+		fi
+
+		time=`cat /proc/${pid}/stat 2>/dev/null | cut -d " " -f 14`
+		if [ "${time}" != "" ] ; then
+			echo ${time} >> tmp/clockTicks.log
+		fi
+
+		if [ "${time}" != "" ] && [ "${TIMEOUT}" != "" ] && [ "$((${time}/${ticks}))" -ge "${TIMEOUT}" ] ; then
+			kill -9 ${pid}
+			exit 124
+		fi
+
+		sleep 0.1
+        done
+}
+
+# Requires binaryfile, input, output, memout, timeout, perf
+run(){
+	mkdir tmp
+	touch tmp/perf.log
+	touch tmp/user.out
+	touch tmp/mem.log
+	touch tmp/clockTicks.log
+	touch tmp/time.log
+	touch tmp/dummyInput
+	
+	if [ "${INPUT}" = "" ] ; then
+		INPUT="tmp/dummyInput"
+	fi
+	if [ "${OUTPUT}" = "" ] ; then
+		OUTPUT="tmp/user.out"
+	fi
+	
+	touch stat.stat
+
+	if [ "${PERF}" = "" ] ; then
+	    /usr/bin/time -f %U -o tmp/time.log --quiet scripts/runHelper.sh ${BINARYFILE} ${PARAMS} ${INPUT} tmp/user.out &
+	    perfpid=`echo $!`
+	else
+	    perf stat -x ";" -o tmp/perf.log scripts/runHelper.sh ${BINARYFILE} ${PARAMS} ${INPUT} tmp/user.out &
+	    perfpid=`echo $!`
+	fi
+
+	while [ "${runhelppid}" = "" ] && [ -e /proc/${perfpid}/status ] ; do
+		runhelppid=`ps --ppid ${perfpid} -o pid=`
+		if [ "${runhelppid}" != "" ] && [ `ps --pid ${runhelppid} -o command= | grep runHelper.sh | wc -l` -ne 1 ] ; then
+			runhelppid=""
+		fi
+	done
+
+	while [ "${runpid}" = "" ] && [ -e /proc/${perfpid}/status ] ; do
+		runpid=`ps --ppid ${runhelppid} -o pid=`
+	done
+
+	monitor ${runpid} &
+	monitorpid=`echo $!`
+
+	wait ${perfpid}
+	perfexit=`echo $?`
+
+	wait ${monitorpid}
+	monitorexit=`echo $?`
+
+	clockTicks=`cat tmp/clockTicks.log | tail -n 1 | tr -d '\n'`
+	instructions=`cat tmp/perf.log | grep instructions | cut -d ";" -f1 | tr -d '\n'`
+	memsize=`cat tmp/mem.log | tail -n 1 | sed 's/VmPeak:\s*\([0-9]*\)\s*kB/\1/' | tr -d '\n'`
+	timeFromTime=`cat tmp/time.log | tr -d '\n'`
+
+	if [ "${timeFromTime}" = "" ] ; then
+		timeFromTime="0"
+	fi
+	if [ "${clockTicks}" = "" ] ; then
+		clockTicks="0"
+	fi
+	if [ "${instructions}" = "" ] || [ "${instructions}" = "<not supported>" ] ; then
+		instructions="0"
+	fi
+	if [ "${memsize}" = "" ] ; then
+		memsize="0"
+	fi
+
+    tmpdiff=`diff ${OUTPUT} tmp/user.out`
+    if [ "${tmpdiff}" = "" ] ; then
+        diffres="OK"
+    else
+        diffres="ERROR"
+    fi
+
+    if [ "${monitorexit}" -eq "124" ] ; then
+		excode="124"
+	elif [ "${monitorexit}" -eq "123" ] ; then
+		excode="123"
+	else
+	    excode="${perfexit}"
+    fi
+
+	echo ${clockTicks}";"${instructions}";"${timeFromTime}";"${memsize}";"${diffres}";"${excode} | tr -d '\n' > stat.stat
+	rm -r tmp
+
+    exit 0
+}
+
+${COMMAND}

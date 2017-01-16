@@ -25,6 +25,6 @@ class PlotView(Tkinter.Frame):
 
     canvas.mpl_connect('key_press_event', on_key_event)
 
-  def plot(self, xvals, yvals):
-    BarPlotter(yvals, xvals).plot(self.figure)
+  def plot(self, labels, times, mems, timesStd, memsStd):
+    BarPlotter(times, mems, labels, timesStd, memsStd).plot(self.figure)
     self.canvas.show()

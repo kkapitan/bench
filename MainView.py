@@ -1,52 +1,167 @@
 import subprocess32
 
+from Runner import *
+import Tkinter, Tkconstants, tkFileDialog
+from Tkinter import *
 
-from ArgumentsView import *
-from DirectoryPickerView import *
 from PlotView import *
-from FilePickerView import *
 from BenchCommandBuilder import *
 from CSVReader import *
 
+class BinaryInputView(Tkinter.Frame):
+    def __init__(self, root):
+        Tkinter.Frame.__init__(self, root)
+
+        self.addHeaderRow()
+        self.addRow(1)
+
+    def addHeaderRow(self):
+
+        fileRow = Label(self, text="File")
+
+        entries = [fileRow]
+
+        for column, entry in enumerate(entries):
+            entry.grid(row=0, column=column)
+
+    def addRow(self, row):
+
+        fileVar, fileEntry = self.setupFileEntry()
+        entries = [fileEntry]
+
+        for column, entry in enumerate(entries):
+            entry.grid(row=row, column=column)
+
+        self.fileVar = fileVar
+
+    def setupFileEntry(self):
+        var = StringVar(None)
+        entry = Entry(self, textvariable=var, state="readonly")
+        entry.bind('<Button-1>', self.askFilename(var))
+
+        return var, entry
+
+    def askFilename(self, var):
+        def callback(event):
+            options = {'initialdir': '~', 'parent': self, 'title': 'This is a title'}
+            var.set(tkFileDialog.askopenfilename(**options))
+
+        return callback
+
+
+class GridView(Tkinter.Frame):
+    def __init__(self, root, maxRows):
+        Tkinter.Frame.__init__(self, root)
+        self.userInputVars = []
+
+        self.addHeaderRow()
+        for i in range(1, maxRows + 1):
+            self.addRow(i)
+
+        self.number_of_rows = maxRows
+
+    def addHeaderRow(self):
+
+        runsLabel = Label(self, text="# of runs")
+        argLabel = Label(self, text="Shell args (optional)")
+        inLabel = Label(self, text="Input file")
+        outLabel = Label(self, text="Output file (optional)")
+        timeLimitLabel = Label(self, text="Timeout (s)")
+        memLimitLabel = Label(self, text="Memory limit (kB)")
+        statusLabel = Label(self, text="Status")
+
+        entries = [runsLabel, argLabel, inLabel, outLabel, timeLimitLabel, memLimitLabel, statusLabel]
+
+        for column, entry in enumerate(entries):
+            entry.grid(row=0, column=column)
+
+    def addRow(self, row):
+
+        runsVar, runsEntry = self.argumentsEntry("1", 5)
+        argVar, argEntry = self.argumentsEntry()
+        inVar, inEntry = self.setupFileEntry()
+        outVar, outEntry = self.setupFileEntry()
+        timeLimitVar, timeLimitEntry = self.argumentsEntry("1", 5)
+        memLimitVar, memLimitEntry = self.argumentsEntry("1000000", 10)
+        statusVar, statusEntry = self.argumentsEntry("Not Run", 10, True)
+
+        entries = [runsEntry, argEntry, inEntry, outEntry, timeLimitEntry, memLimitEntry, statusEntry]
+
+        for column, entry in enumerate(entries):
+            entry.grid(row=row, column=column)
+
+        vars = {"runs": runsVar, "args": argVar, "in": inVar, "out": outVar, "timelimit": timeLimitVar, "memlimit": memLimitVar, "status": statusVar}
+        self.userInputVars.append(vars)
+
+
+    def argumentsEntry(self, initial="", width=None, readonly=False):
+        var = StringVar()
+        var.set(initial)
+
+        entry = Entry(self, textvariable=var)
+        if readonly: entry.config(state="readonly")
+        if width != None: entry.config(width=width)
+        return var, entry
+
+    def setupFileEntry(self):
+        var = StringVar(None)
+        entry = Entry(self, textvariable=var, state="readonly")
+        entry.bind('<Button-1>', self.askFilename(var))
+
+        return var, entry
+
+    def askFilename(self, var):
+        def callback(event):
+            options = { 'initialdir' : '~', 'parent': self, 'title' : 'This is a title'}
+            var.set(tkFileDialog.askopenfilename(**options))
+        return callback
+
 class MainView(Tkinter.Frame):
-  def __init__(self, root):
-    Tkinter.Frame.__init__(self, root)
+    def __init__(self, root):
+        Tkinter.Frame.__init__(self, root)
 
-    entry_opt = {'fill': Tkconstants.BOTH, 'padx': 5, 'pady': 5}
+        self.fileInputView = fi = BinaryInputView(self)
+        fi.pack()
 
-    self.executablePicker = FilePickerView(root, "Choose executable")
-    self.executablePicker.pack(**entry_opt)
+        self.gridView = gv = GridView(self, 5)
+        gv.pack()
 
-    self.inputPicker = DirectoryPickerView(root, "Choose input directory", False)
-    self.inputPicker.pack(**entry_opt)
+        self.plotView = pv = PlotView(self)
+        pv.pack()
 
-    self.argumentsView = ArgumentsView(root)
-    self.argumentsView.pack(**entry_opt)
+        button = self.setupButton("Bench it!", self.main_action)
+        button.pack()
 
-    self.outputPicker = DirectoryPickerView(root, "Choose output directory")
-    self.outputPicker.pack(**entry_opt)
+    def main_action(self):
+        params = self.prepare_input()
 
-    self.executablePicker.fileName.set("ls")
-    self.inputPicker.directory.set("/Users/kkapitan/bench/test")
+        res = runTests(params)
+        resT = zip(*res)
+        print resT
+        self.prepare_output(resT)
 
-    self.setupButton(root)
+    def prepare_input(self):
 
-    self.plotCanvas = PlotView(root)
-    self.plotCanvas.pack(**entry_opt)
+        file = self.fileInputView.fileVar.get()
+        result = [file, '1']
 
+        for inputDictionary in self.gridView.userInputVars:
+            resultEntry = map(lambda x: inputDictionary[x].get(), ["runs", "args", "in", "out", "timelimit", "memlimit"])
+            result.append(resultEntry)
 
-  def setupButton(self, root):
-    button_opt = {'fill': Tkconstants.BOTH, 'padx': 5, 'pady': 5}
-    Tkinter.Button(root, text="Bench it!", command=self.main_action).pack(**button_opt)
+        return result
 
-  def main_action(self):
+    def prepare_output(self, result):
+        self.plotView.plot(result[6], result[1], result[3], result[7], result[9])
+        self.output_statuses(result[-1])
 
-    inDir = self.inputPicker.directory.get()
-    outDir = self.outputPicker.directory.get()
-    args = self.argumentsView.arguments.get()
-    cmd = self.executablePicker.fileName.get()
+    def output_statuses(self, statuses):
+        for index, status in enumerate(statuses):
+            self.gridView.userInputVars[index]["status"].set(status)
 
-    subprocess32.call(BenchCommandBuilder().buildCommand(inDir, outDir, cmd, args))
+    def setupButton(self, text, command):
+        button_opt = {'fill': Tkconstants.BOTH, 'padx': 5, 'pady': 5}
 
-    array = CSVReader().read("res.csv")
-    self.plotCanvas.plot(array[0], array[1])
+        button = Tkinter.Button(self, text=text, command=command)
+        button.pack(**button_opt)
+        return button
